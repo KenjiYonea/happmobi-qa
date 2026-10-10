@@ -1,0 +1,10 @@
+{
+  "usuarioValido": {
+    "nome": "Teste QA",
+    "senha": "Teste@12345"
+  },
+  "usuarioSemNome": {
+    "nome": "",
+    "senha": "Teste@12345"
+  }
+}
