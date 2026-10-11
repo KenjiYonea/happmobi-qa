@@ -42,6 +42,8 @@ describe("Cadastro de Usuários", () => {
             cy.contains("Senha forte")
                 .should("be.visible");
 
+            cy.screenshot("CT-001-Dados do formulario");
+
             // Salvar usuário
             cy.contains("button", "Salvar")
                 .should("be.visible")
@@ -56,6 +58,8 @@ describe("Cadastro de Usuários", () => {
             cy.get("#swal2-html-container")
                 .should("be.visible")
                 .and("contain.text", "Usuário criado com sucesso!");
+
+            cy.screenshot("CT-001-cadastro-sucesso");
 
             // Confirmar mensagem de sucesso
             cy.get("button.swal2-confirm")
@@ -117,6 +121,8 @@ describe("Cadastro de Usuários", () => {
         cy.get("#password-password")
             .blur();
 
+        cy.screenshot("CT-001-Dados do formulario");
+        
         // Tentar cadastrar usuário sem nome
         cy.get('[data-testid="button-salvar"]')
             .scrollIntoView()
@@ -128,5 +134,7 @@ describe("Cadastro de Usuários", () => {
         cy.get("#swal2-html-container")
             .should("be.visible")
             .and("contain.text", "Nome é obrigatório");
+
+        cy.screenshot("CT-002-nome-obrigatorio");
     });
 });
