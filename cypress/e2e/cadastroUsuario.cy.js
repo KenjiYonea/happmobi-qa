@@ -1,3 +1,4 @@
+
 describe("Cadastro de Usuários", () => {
     beforeEach(() => {
         cy.login();
@@ -11,64 +12,71 @@ describe("Cadastro de Usuários", () => {
 
         cy.url().should("include", "/app/admin/usuarios/listagem/criar");
 
-        const id = Date.now().toString().slice(-8);
+        // Carregar massa de teste da Fixture
+        cy.fixture("usuarios").then((dados) => {
+            const id = Date.now().toString().slice(-8);
 
-        const usuario = {
-            nome: `QA ${id}`,
-            email: `qa${id}@email.com`,
-            senha: "Teste@12345"
-        };
+            const usuario = {
+                ...dados.usuarioValido,
+                nome: `QA ${id}`,
+                email: `qa${id}@email.com`
+            };
 
-        // Preencher os campos validos do formulario
-        cy.get('input[placeholder="Nome"]')
-            .should("be.visible")
-            .type(usuario.nome)
-            .should("have.value", usuario.nome);
+            // Preencher os campos válidos do formulário
+            cy.get('input[placeholder="Nome"]')
+                .should("be.visible")
+                .type(usuario.nome)
+                .should("have.value", usuario.nome);
 
-        cy.get('input[placeholder="E-mail"]')
-            .should("be.visible")
-            .type(usuario.email)
-            .should("have.value", usuario.email);
+            cy.get('input[placeholder="E-mail"]')
+                .should("be.visible")
+                .type(usuario.email)
+                .should("have.value", usuario.email);
 
-        cy.get('input[id="password-password"]')
-            .should("be.visible")
-            .type(usuario.senha, { log: false })
-            .should("have.value", usuario.senha);
+            cy.get("#password-password")
+                .should("be.visible")
+                .type(usuario.senha, { log: false })
+                .should("have.value", usuario.senha);
 
-        cy.contains("Senha forte")
-            .should("be.visible");
+            // Validar força da senha
+            cy.contains("Senha forte")
+                .should("be.visible");
 
-        // Salvar usuário
-        cy.contains("button", "Salvar")
-            .should("be.visible")
-            .and("be.enabled")
-            .click();
+            // Salvar usuário
+            cy.contains("button", "Salvar")
+                .should("be.visible")
+                .and("be.enabled")
+                .click();
 
-        // Validar mensagem de sucesso
-        cy.get("#swal2-title")
-            .should("be.visible")
-            .and("have.text", "Sucesso");
+            // Validar mensagem de sucesso
+            cy.get("#swal2-title")
+                .should("be.visible")
+                .and("have.text", "Sucesso");
 
-        cy.get("#swal2-html-container")
-            .should("be.visible")
-            .and("contain.text", "Usuário criado com sucesso!");
+            cy.get("#swal2-html-container")
+                .should("be.visible")
+                .and("contain.text", "Usuário criado com sucesso!");
 
-        // Clicar no OK apenas uma vez
-        cy.get("button.swal2-confirm")
-            .click();
+            // Confirmar mensagem de sucesso
+            cy.get("button.swal2-confirm")
+                .click();
 
-        // Validar retorno à listagem
-        cy.url().should("include", "/app/admin/usuarios/listagem");
+            // Validar retorno à listagem
+            cy.url()
+                .should("include", "/app/admin/usuarios/listagem");
 
-        cy.url().should("not.include", "/listagem/criar");
+            cy.url()
+                .should("not.include", "/listagem/criar");
 
-        // Validar carregamento da listagem
-        cy.contains("button", "Adicionar usuário")
-            .should("be.visible");
+            // Validar carregamento da listagem
+            cy.contains("button", "Adicionar usuário")
+                .should("be.visible");
 
-        cy.get("tr[mat-row]")
-            .contains("td", usuario.email)
-            .should("be.visible");
+            // Validar usuário cadastrado na listagem
+            cy.get("tr[mat-row]")
+                .contains("td", usuario.email)
+                .should("be.visible");
+        });
     });
 
     it("CT-002 - Não deve cadastrar usuário sem nome", () => {
